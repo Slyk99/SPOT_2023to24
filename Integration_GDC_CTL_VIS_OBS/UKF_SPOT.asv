@@ -1,0 +1,38 @@
+    %% Spacecraft Data
+    m = 11.210; % kg  
+    J = 0.20184; % kgm^2
+    dt = 0.01; % seconds
+    N = 6; % Number of states
+    %% Kalman Filter setup
+    % State transition matrix
+    A = [1 0 0 dt 0 0;
+         0 1 0 0 dt 0;
+         0 0 1 0 0 dt;
+         0 0 0 1 0 0;
+         0 0 0 0 1 0;
+         0 0 0 0 0 1];
+    % sensor data
+    H = [1 0 0 0 0 0;
+         0 1 0 0 0 0;
+         0 0 1 0 0 0];
+%% Black
+var = 0.005;
+Q  =  [dt 0 0 0 0 0;
+               0 dt 0 0 0 0;
+               0 0 dt 0 0 0;
+               0 0 0 dt 0 0;
+               0 0 0 0 dt 0;
+               0 0 0 0 0 dt]*var; %% Change this
+variance = 0.99;
+R = [variance 0 0;
+    0 variance 0;
+    0 0 variance];
+thresh = 7.815;
+alpha = 0.9; % very small var, never > 1
+beta = 2; % 2 for gaussian
+kappa = 20; % Starts at zero, usually small
+lamda = (alpha^2)*(N + kappa) - N; % N is the number of dimensions
+
+%% IC
+P_IC = 0.2*eye(6); %% Change this
+method = 1;

@@ -1,0 +1,8 @@
+1. Dac initial gains were changed to be optimized with the lqr
+- This is due to the previous gains not performing well with the addition of all the other code
+
+2. Threshold in filters is now dynamic
+
+3. Non-linear noise function was added 
+
+4. Blue was added with VIS
