@@ -19,28 +19,24 @@
          0 0 1 0 0 0];
 
 %% Black
-x = [0.814723871669493	0.162183146010935	0.644318485875562	0.0596198079607716	0.422886266214395	0.582249582278063	8.50712689217740	0.559032985956150	34.1857789367023	49.3967367596900	0.631189103080277	0.782872290107050	0.503781281995370	4.06726974416672];
-Q_Black  =  [x(1) 0 0 0 0 0;
-               0 x(1) 0 0 0 0;
-               0 0 x(2) 0 0 0;
-               0 0 0 x(3) 0 0;
-               0 0 0 0 x(3) 0;
-               0 0 0 0 0 x(4)]; %% Change this
-R_Black = [x(5) 0 0;
-            0 x(5) 0;
-            0 0 x(6)];
-thresh_Black = 7;%x(7);
-alpha_Black = x(8); % very small var, never > 1
+Q_Black = [0.0000005 0 0 0 0 0;
+               0 0.0000005 0 0 0 0;
+               0 0 0.00005 0 0 0;
+               0 0 0 0.00005 0 0;
+               0 0 0 0 0.00005 0;
+               0 0 0 0 0 0.00005];
+variance = 0.99;
+R_Black = [variance 0 0;
+    0 variance 0;
+    0 0 variance];
+alpha_Black = 0.9; % very small var, never > 1
 beta_Black = 2; % 2 for gaussian
-kappa_Black = x(9); % Starts at zero, usually small
+kappa_Black = 20; % Starts at zero, usually small
 lamda_Black = (alpha_Black^2)*(N + kappa_Black) - N; % N is the number of dimensions
-P_IC_Black = [x(10) 0 0 0 0 0;
-               0 x(10) 0 0 0 0;
-               0 0 x(11) 0 0 0;
-               0 0 0 x(12) 0 0;
-               0 0 0 0 x(12) 0;
-               0 0 0 0 0 x(13)]; %% Change this
-thresh_Factor_Black = x(14);
+P_IC_Black = 0.2*eye(6); %% Change this
+
+thresh_Black = 7.815;
+thresh_Factor_Black = 0.1;
 
 %% Blue
 var = 0.005;

@@ -17,7 +17,7 @@ Black_States_Post_Kalman = [dataClass_rt.CustomUserData60(T_s:end), dataClass_rt
 Blue_States_PhaseSpace = [dataClass_rt.BLACK_Px_m(T_s:end), dataClass_rt.BLACK_Py_m(T_s:end), zeros(size(dataClass_rt.CustomUserData70(T_s:end)))];
 
 % Black_States_PhaseSpace = [dataClass_rt.BLACK_Px_m,dataClass_rt.BLACK_Py_m,zeros(size(dataClass_rt.CustomUserData70))];
-Black_States_PhaseSpace = [dataClass_rt.BLUE_Px_m(T_s:end), dataClass_rt.BLUE_Py_m(T_s:end), zeros(size(dataClass_rt.CustomUserData70(T_s:end)))];
+Black_States_PhaseSpace = [dataClass_rt.BLUE_Px_m(T_s:end), dataClass_rt.BLUE_Py_m(T_s:end), dataClass_rt.BLUE_Rz_rad(T_s:end)];
 
 
 

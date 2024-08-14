@@ -7,14 +7,14 @@ function plot_pdf_Black(measured, ground_truth)
     [measured_x,ground_truth_x] = trim_array(measured(:,1),ground_truth(:,1));
     [measured_y,ground_truth_y] = trim_array(measured(:,2),ground_truth(:,2));
     [measured_t,ground_truth_t] = trim_array(measured(:,3),ground_truth(:,3));
-    measured = [measured_x, measured_y, measured_t];
-    ground_truth = [ground_truth_x, ground_truth_y, ground_truth_t];
+    measured = [measured_x;measured_y;measured_t];
+    ground_truth = []
 
     % Compute residual
     diff_x = measured(:, 1) - ground_truth(:, 1);
     diff_y = measured(:, 2) - ground_truth(:, 2);
     diff_theta = measured(:, 3) - ground_truth(:, 3);
-    diff_theta = findSmallestAngles(diff_theta);
+    % diff_theta = findSmallestAngles(measured(:, 3), ground_truth(:, 3));
 
     x_max = 0.3;
     x_min = -x_max;
@@ -105,18 +105,23 @@ hold off;
 saveas(gcf, 'PDF_Black_Blue.png');
 end
 
-function minAngles = findSmallestAngles(angle)
-minAngles = zeros(size(angle));
-for i = length(angle)
-    if angle > 2*pi
-        minAngles = angle - 2*pi;
-    elseif angle < -2*pi
-        minAngles = angle + 2*pi;
-    else
-        minAngles = angle;
+function minAngles = findSmallestAngles(vec1, vec2)
+    % Ensure both vectors are column vectors
+    if ~iscolumn(vec1)
+        vec1 = vec1(:);
     end
-end
-
+    if ~iscolumn(vec2)
+        vec2 = vec2(:);
+    end
+    
+    % Calculate the absolute difference between corresponding angles
+    angleDiff = abs(vec1 - vec2);
+    
+    % Normalize the angle differences to the range [0, 2*pi]
+    angleDiff = mod(angleDiff, 2*pi);
+    
+    % Find the smallest angle in between, which should be min(angleDiff, 2*pi - angleDiff)
+    minAngles = min(angleDiff, 2*pi - angleDiff);
 end
 
 function [trimmed_array1,trimmed_array2] = trim_array(array1,array2)

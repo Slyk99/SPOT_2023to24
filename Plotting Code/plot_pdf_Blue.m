@@ -54,7 +54,7 @@ xlabel('X Measurement Residual');
 % legend('PDF', '95% CI', 'Median');
 ylabel('Probability Density');
 set(gca, 'FontSize', text_size);
-xlim([x_min,x_max])
+xlim([min(diff_x), max(diff_x)])
 hold off;
 
 subplot(2,1,2);
@@ -72,7 +72,7 @@ xlabel('Y Measurement Residual');
 ylabel('Probability Density');
 legend('PDF', 'Probability Density', '1 STD','','Mean');
 set(gca, 'FontSize', text_size);
-xlim([x_min,x_max])
+xlim([min(diff_y), max(diff_y)])
 hold off;
 
 

@@ -5,26 +5,49 @@ function PlotFilter(PhaseSpace, Pre_Filter_Data, Filter_Data,error_covariance, T
     theta_real = PhaseSpace(:,3);
     x_noisy = Pre_Filter_Data(:,1);
     y_noisy = Pre_Filter_Data(:,2);
-    theta_noisy = wrapTo180(unwrap(Pre_Filter_Data(:,3)));
+    theta_noisy = Pre_Filter_Data(:,3);
     x_Filtered = Filter_Data(:,1);
     y_Filtered = Filter_Data(:,2);
     theta_Filtered = Filter_Data(:,3);
     sim_time = Time;
 
-    if Angle
-        j = 3;
-    else
-        j = 2;
-    end
+    %% If tx2 is wrapped, unwrap it here
+    % Unwrap angle from -pi to pi
+    unwrapped_angle = unwrap(theta_noisy);
+
+    % Wrap angle from 0 to 2pi
+    theta_noisy = mod(unwrapped_angle, 2*pi);
 
     % Setting default font properties
     set(groot, 'DefaultTextFontName', 'Times New Roman');
     set(groot, 'DefaultAxesFontName', 'Times New Roman');
     set(groot, 'DefaultAxesFontSize', 24);
 
+    if Angle
+    % % Plotting Angle Of SpaceCraft
+    % figure
+    % subplot(3,1,3)
+    % hold on
+    % plot(sim_time, theta_real, 'k', 'LineWidth', line_size)
+    % plot(sim_time, theta_noisy, 'b*', 'LineWidth', line_size)
+    % plot(sim_time, theta_Filtered, 'r', 'LineWidth', line_size)
+    % 
+    % % Plotting 95% confidence range based on error covariance
+    % theta_confidence = 1.96 * sqrt(error_covariance(3:6:end,3));
+    % plot(sim_time, theta_Filtered + theta_confidence, 'r--', 'LineWidth', line_size);
+    % plot(sim_time, theta_Filtered - theta_confidence, 'r--', 'LineWidth', line_size);
+    % 
+    % % Filling the area between the confidence lines
+    % patch([sim_time', fliplr(sim_time')], [theta_Filtered' + theta_confidence', fliplr(theta_Filtered' - theta_confidence')], 'r', 'FaceAlpha', 0.2, 'EdgeColor', 'r', 'LineStyle', '--');
+    % 
+    % ylim([0, 2*pi]); % Y limits
+    % hold off
+    % xlabel('Time [s]')
+    % ylabel('\theta [Rad]')
+    % grid on
     figure
     % Plotting X Values of SpaceCraft
-    subplot(j,1,1)
+    subplot(2,1,1)
     hold on
     plot(sim_time, x_real, 'k', 'LineWidth', line_size)
     plot(sim_time, x_noisy, 'b*', 'LineWidth', line_size)
@@ -45,7 +68,7 @@ function PlotFilter(PhaseSpace, Pre_Filter_Data, Filter_Data,error_covariance, T
     hold off
 
     % Plotting Y Values of SpaceCraft
-    subplot(j,1,2)
+    subplot(2,1,2)
     hold on
     plot(sim_time, y_real, 'k', 'LineWidth', line_size)
     plot(sim_time, y_noisy, 'b*', 'LineWidth', line_size)
@@ -67,31 +90,6 @@ function PlotFilter(PhaseSpace, Pre_Filter_Data, Filter_Data,error_covariance, T
     legend('Actual States', 'Measured States', 'Filtered States', '95% Confidence')
     grid on
     hold off
-
-
-    if Angle
-        % Plotting Angle Of SpaceCraft
-        subplot(j,1,3)
-        hold on
-        plot(sim_time, theta_real, 'k', 'LineWidth', line_size)
-        plot(sim_time, theta_noisy, 'b*', 'LineWidth', line_size)
-        plot(sim_time, theta_Filtered, 'r', 'LineWidth', line_size)
-    
-        % Plotting 95% confidence range based on error covariance
-        theta_confidence = 1.96 * sqrt(error_covariance(3:6:end,3));
-        plot(sim_time, theta_Filtered + theta_confidence, 'r--', 'LineWidth', line_size);
-        plot(sim_time, theta_Filtered - theta_confidence, 'r--', 'LineWidth', line_size);
-    
-        % Filling the area between the confidence lines
-        patch([sim_time', fliplr(sim_time')], [theta_Filtered' + theta_confidence', fliplr(theta_Filtered' - theta_confidence')], 'r', 'FaceAlpha', 0.2, 'EdgeColor', 'r', 'LineStyle', '--');
-        Plot_Patch(sim_time, theta_Filtered, theta_confidence)
-    
-        ylim([0, 2*pi]); % Y limits
-        hold off
-        xlabel('Time [s]')
-        ylabel('\theta [Rad]')
-        grid on
-    end
 
 
     saveas(gcf, 'UKF_Blue_NOTITLE.png');
