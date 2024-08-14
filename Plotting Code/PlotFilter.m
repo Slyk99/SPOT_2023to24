@@ -1,86 +1,134 @@
-function PlotFilter(system_output,Filter_Name)
+function PlotFilter(PhaseSpace, Pre_Filter_Data, Filter_Data,error_covariance, Time, Filter_Name, line_size)
+    % Extracting data from system_output
+    x_real = PhaseSpace(:,1);
+    y_real = PhaseSpace(:,2);
+    theta_real = PhaseSpace(:,3);
+    x_noisy = Pre_Filter_Data(:,1);
+    y_noisy = Pre_Filter_Data(:,2);
+    theta_noisy = Pre_Filter_Data(:,3);
+    x_Filtered = Filter_Data(:,1);
+    y_Filtered = Filter_Data(:,2);
+    theta_Filtered = Filter_Data(:,3);
+    sim_time = Time;
 
-    % x_Desired = system_output(:,4);
-    % y_Desired = system_output(:,5);
-    % theta_Desired = system_output(:,6);
+    %% If tx2 is wrapped, unwrap it here
+    % Unwrap angle from -pi to pi
+    unwrapped_angle = unwrap(theta_noisy);
 
-    x_real = system_output(:,1);
-    y_real = system_output(:,2);
-    theta_real = system_output(:,3);
+    % Wrap angle from 0 to 2pi
+    theta_noisy = mod(unwrapped_angle, 2*pi);
 
-    x_noisy = system_output(:,4);
-    y_noisy = system_output(:,5);
-    theta_noisy = system_output(:,6);
+    % Setting default font properties
+    set(groot, 'DefaultTextFontName', 'Times New Roman');
+    set(groot, 'DefaultAxesFontName', 'Times New Roman');
+    set(groot, 'DefaultAxesFontSize', 24);
 
-    x_Filtered = system_output(:,7);
-    y_Filtered = system_output(:,8);
-    theta_Filtered = system_output(:,9);
-
-    sim_time = system_output(:,10);
-
-    figure
-    subplot(3,1,3)
-    % plot(sim_time,theta_Desired,'Color','k')
-    hold on
-    plot(sim_time,theta_real,'Color','k')%,'LineWidth', 4)
-    plot(sim_time,theta_noisy,'b*')%,'LineWidth', 4)
-    plot(sim_time,theta_Filtered,'Color','r')%,'LineWidth', 4)
-    hold off
-    title('Angle Of SpaceCraft')
-    xlabel('Time [s]')
-    ylabel('Angle [Rad]')
-    legend('Actualy Angle','VIS Data','Filtered Angle')
-    % set(gca, 'FontSize', 60);
-    grid on
-    % ylim([-1.5, 1.5]);
-    saveas(gcf, 'Kalman_Theta.png');
-    % subplot(2,2,1)
-    % % plot(x_Desired,y_Desired,'Color','k')
+    % % Plotting Angle Of SpaceCraft
+    % figure
+    % subplot(3,1,3)
     % hold on
-    % rectangle('position',[0 0 3.5 2.4])
-    % axis([-0.2 3.7 -0.2 2.6])
-    % plot(x_real,y_real,'Color','k')
-    % plot(x_noisy,y_noisy,'Color','b','LineStyle',':')
-    % plot(x_Filtered,y_Filtered,'Color','r','LineStyle','--')
-    % title('Path Of SpaceCraft')
-    % xlabel('Distance [m]')
-    % ylabel('Distance [m]')
-    % legend('Actualy Path','VIS Data','Filtered Path')
-    % grid on
+    % plot(sim_time, theta_real, 'k', 'LineWidth', line_size)
+    % plot(sim_time, theta_noisy, 'b*', 'LineWidth', line_size)
+    % plot(sim_time, theta_Filtered, 'r', 'LineWidth', line_size)
+    % 
+    % % Plotting 95% confidence range based on error covariance
+    % theta_confidence = 1.96 * sqrt(error_covariance(3:6:end,3));
+    % plot(sim_time, theta_Filtered + theta_confidence, 'r--', 'LineWidth', line_size);
+    % plot(sim_time, theta_Filtered - theta_confidence, 'r--', 'LineWidth', line_size);
+    % 
+    % % Filling the area between the confidence lines
+    % patch([sim_time', fliplr(sim_time')], [theta_Filtered' + theta_confidence', fliplr(theta_Filtered' - theta_confidence')], 'r', 'FaceAlpha', 0.2, 'EdgeColor', 'r', 'LineStyle', '--');
+    % 
+    % ylim([0, 2*pi]); % Y limits
     % hold off
-    
-    subplot(3,1,1)
-    % plot(sim_time,x_Desired,'Color','k')
+    % xlabel('Time [s]')
+    % ylabel('\theta [Rad]')
+    % grid on
+    figure
+    % Plotting X Values of SpaceCraft
+    subplot(2,1,1)
     hold on
-    plot(sim_time,x_real,'Color','k')%,'LineWidth', 4)
-    plot(sim_time,x_noisy,'b*')%,'LineWidth', 4)
-    plot(sim_time,x_Filtered,'Color','r')%,'LineWidth', 4)
-    title('X Values of SpaceCraft')
-    xlabel('Time [s]')
-    ylabel('Distance [m]')
-    legend('Actualy Path','VIS Data','Filtered Path')
-    grid on
-    % set(gca, 'FontSize', 60);
-    % ylim([2.45 2.65]);
-    hold off
-    saveas(gcf, 'KalmanX.png');
+    plot(sim_time, x_real, 'k', 'LineWidth', line_size)
+    plot(sim_time, x_noisy, 'b*', 'LineWidth', line_size)
+    plot(sim_time, x_Filtered, 'r', 'LineWidth', line_size)
+    
+    % Plotting 95% confidence range based on error covariance
+    x_confidence = 1.96 * sqrt(error_covariance(1:6:end,1));
+    plot(sim_time, x_Filtered + x_confidence, 'r--', 'LineWidth', line_size);
+    plot(sim_time, x_Filtered - x_confidence, 'r--', 'LineWidth', line_size);
 
-    subplot(3,1,2)
-    % plot(sim_time,y_Desired,'Color','k')
-    hold on
-    plot(sim_time,y_real,'Color','k')%,'LineWidth', 4)
-    plot(sim_time,y_noisy,'b*')%,'LineWidth', 4)
-    plot(sim_time,y_Filtered,'Color','r')%,'LineWidth', 4)
-    title('Y Values of SpaceCraft')
-    xlabel('Time [s]')
-    ylabel('Distance [m]')
-    legend('Actualy Path','VIS Data','Filtered Path')
+    % Filling the area between the confidence lines
+    patch([sim_time', fliplr(sim_time')], [x_Filtered' + x_confidence', fliplr(x_Filtered' - x_confidence')], 'r', 'FaceAlpha', 0.2, 'EdgeColor', 'r', 'LineStyle', '--');
+    Plot_Patch(sim_time, x_Filtered, x_confidence)
+
+    ylim([-0.25, 3.25]); % Y limits
+    ylabel('X Distance [m]')
     grid on
-    % set(gca, 'FontSize', 60);
-    % ylim([0.6 0.9]);
     hold off
-    saveas(gcf, 'Kalman_Y.png');
+
+    % Plotting Y Values of SpaceCraft
+    subplot(2,1,2)
+    hold on
+    plot(sim_time, y_real, 'k', 'LineWidth', line_size)
+    plot(sim_time, y_noisy, 'b*', 'LineWidth', line_size)
+    plot(sim_time, y_Filtered, 'r', 'LineWidth', line_size)
+    
+    % Plotting 95% confidence range based on error covariance
+    y_confidence = 1.96 * sqrt(error_covariance(2:6:end,2));
+    plot(sim_time, y_Filtered + y_confidence, 'r--', 'LineWidth', line_size);
+    plot(sim_time, y_Filtered - y_confidence, 'r--', 'LineWidth', line_size);
     
 
+    % Filling the area between the confidence lines
+    patch([sim_time', fliplr(sim_time')], [y_Filtered' + y_confidence', fliplr(y_Filtered' - y_confidence')], 'r', 'FaceAlpha', 0.2, 'EdgeColor', 'r', 'LineStyle', '--');
+    Plot_Patch(sim_time, y_Filtered, y_confidence)
+
+
+    ylim([-1.1, 2.2]); % Y limits
+    ylabel('Y Distance [m]')
+    legend('Actual States', 'Measured States', 'Filtered States', '95% Confidence')
+    grid on
+    hold off
+
+
+    saveas(gcf, 'UKF_Blue_NOTITLE.png');
     sgtitle(append('Results for ', Filter_Name))
+end
+
+function Plot_Patch(sim_time, x_Filtered, x_confidence, color, alpha)
+    % addConfidenceIntervalPatch Adds a confidence interval patch to the current plot.
+    %
+    % Inputs:
+    %   sim_time    - Time array (1xn) for the x-axis
+    %   x_Filtered  - Filtered data array (1xn) for the y-axis
+    %   x_confidence- Confidence interval array (1xn) for y-axis
+    %   color       - Color for the patch (e.g., 'r' for red)
+    %   alpha       - Transparency of the patch (0 to 1)
+    %
+    % Example Usage:
+    %   figure;
+    %   plot(sim_time, x_Filtered);
+    %   addConfidenceIntervalPatch(sim_time, x_Filtered, x_confidence, 'r', 0.2);
+    %   grid on;
+
+    if nargin < 5
+        alpha = 0.2; % Default transparency
+    end
+
+    if nargin < 4
+        color = 'r'; % Default color
+    end
+
+    % Extract non-NaN indices
+    valid_indices = ~isnan(sim_time) & ~isnan(x_Filtered) & ~isnan(x_confidence);
+
+    % Filter the data to remove NaN values
+    sim_time_valid = sim_time(valid_indices);
+    x_Filtered_valid = x_Filtered(valid_indices);
+    x_confidence_valid = x_confidence(valid_indices);
+
+    % Add the confidence interval patch to the current plot
+    patch([sim_time_valid', fliplr(sim_time_valid')], ...
+          [x_Filtered_valid' + x_confidence_valid', fliplr(x_Filtered_valid' - x_confidence_valid')], ...
+          color, 'FaceAlpha', alpha, 'EdgeColor', color, 'LineStyle', '--');
 end

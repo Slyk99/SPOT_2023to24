@@ -1,0 +1,48 @@
+load('../ExperimentData_RED_2024_4_5_15_45_21_4293_Dock_almost_Off_Table\ExperimentData_RED_2024_4_5_15_45_21_4293_1.mat')
+load('../')
+%% Load Data
+Blue_States_tx2 = [dataClass_rt.CustomUserData66,dataClass_rt.CustomUserData67, zeros(size(dataClass_rt.CustomUserData70))];
+Blue_States_Pre_Kalman = [dataClass_rt.CustomUserData70, dataClass_rt.CustomUserData71, zeros(size(dataClass_rt.CustomUserData70))];
+Blue_States_Post_Kalman = [dataClass_rt.CustomUserData68, dataClass_rt.CustomUserData69, zeros(size(dataClass_rt.CustomUserData70))];
+
+Black_States_tx2 = [dataClass_rt.CustomUserData57,dataClass_rt.CustomUserData58, zeros(size(dataClass_rt.CustomUserData59))];
+Black_States_Pre_Kalman = [dataClass_rt.CustomUserData63, dataClass_rt.CustomUserData64, dataClass_rt.CustomUserData65];
+Black_States_Post_Kalman = [dataClass_rt.CustomUserData60, dataClass_rt.CustomUserData61, dataClass_rt.CustomUserData62];
+
+%% Change if blue is black
+% Blue_States_PhaseSpace = [dataClass_rt.BLUE_Px_m,dataClass_rt.BLUE_Py_m,zeros(size(dataClass_rt.CustomUserData70))];
+Blue_States_PhaseSpace = [dataClass_rt.BLACK_Px_m,dataClass_rt.BLACK_Py_m,zeros(size(dataClass_rt.CustomUserData70))];
+
+% Black_States_PhaseSpace = [dataClass_rt.BLACK_Px_m,dataClass_rt.BLACK_Py_m,zeros(size(dataClass_rt.CustomUserData70))];
+Black_States_PhaseSpace = [dataClass_rt.BLUE_Px_m,dataClass_rt.BLUE_Py_m,zeros(size(dataClass_rt.CustomUserData70))];
+
+
+
+Time = [dataClass_rt.Time_s];
+
+figure
+title('Blue x')
+plot(Time,Blue_States_PhaseSpace(:,1),'k')
+hold on
+plot(Time,Blue_States_Pre_Kalman(:,1),'b*')
+plot(Time,Blue_States_Post_Kalman(:,1),'r')
+grid on
+legend('Phase Space', 'Pre Kalman', 'Post Kalman')
+
+figure
+title('Blue x')
+plot(Time,Blue_States_PhaseSpace(:,2),'k')
+hold on
+plot(Time,Blue_States_Pre_Kalman(:,2),'b*')
+plot(Time,Blue_States_Post_Kalman(:,2),'r')
+grid on
+legend('Phase Space', 'Pre Kalman', 'Post Kalman')
+
+figure
+title('Blue x')
+plot(Time,Blue_States_PhaseSpace(:,3),'k')
+hold on
+plot(Time,Blue_States_Pre_Kalman(:,3),'b*')
+plot(Time,Blue_States_Post_Kalman(:,3),'r')
+grid on
+legend('Phase Space', 'Pre Kalman', 'Post Kalman')
