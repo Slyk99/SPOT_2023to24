@@ -40,12 +40,13 @@ end
 
 %% Plot Data
 % Black
-plot_pdf_Black(Black_States_Pre_Kalman, Black_States_PhaseSpace)
-PlotFilter(Black_States_PhaseSpace, Black_States_Pre_Kalman, Black_States_Post_Kalman,PK_black', Time, 'UKF', 2,true)
+plot_pdf_Black(Black_States_Pre_Kalman, Black_States_PhaseSpace,'TC2_Black')
+PlotFilter(Black_States_PhaseSpace, Black_States_Pre_Kalman, Black_States_Post_Kalman,PK_black', Time, 'UKF_tar', 1,true)
 
 % Blue
-plot_pdf_Blue(Blue_States_Pre_Kalman, Blue_States_PhaseSpace)
-PlotFilter(Blue_States_PhaseSpace, Blue_States_Pre_Kalman, Blue_States_Post_Kalman,PK_blue', Time, 'UKF', 2,false)
+plot_pdf_Blue(Blue_States_Pre_Kalman, Blue_States_PhaseSpace,'TC2_Blue')
+PlotFilter(Blue_States_PhaseSpace, Blue_States_Pre_Kalman, Blue_States_Post_Kalman,PK_blue', Time, 'UKF_obs', 1,false)
+clc
 
 
 
